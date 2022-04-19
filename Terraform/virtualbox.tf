@@ -1,7 +1,7 @@
-resource "virtualbox_vm" "site" { 
+resource "virtualbox_vm" "project" { 
   count     = 1
-  name      = "site"
-  image     = "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64-vagrant.box"
+  name      = "Project"
+  image     = "~/bionic-server-cloudimg-amd64-vagrant.box"
   cpus      = 2
   memory    = "1024 mib"
 

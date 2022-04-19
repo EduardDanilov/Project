@@ -1,0 +1,1 @@
+10.0.2.6 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2302 ansible_pass=vagrant ansible_user=vagrant
