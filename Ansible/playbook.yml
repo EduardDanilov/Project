@@ -2,7 +2,7 @@
 
 - name: Setting up VMs
   gather_facts: true
-  hosts: all
+  hosts: Project
 
   tasks:
 
@@ -29,129 +29,58 @@
         content: |
           belhard ALL = NOPASSWD: ALL
           belhard ALL = (ALL) NOPASSWD:ALL
-      become: true
+      become: yes
 
-    - name: Add local SSH key
+    - name: Add vagrant user to the sudoers
       copy:
-        dest: "/home/belhard/.ssh/authorized_keys"
-        content:
-           ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDAQTSC6qNKQQExWZBcj25fQgwKKqiHIrle4iyG24CkRMI35oMs2dmzizMm40luuoC4JjPj40KUe8Z/idpXaTWpjO+I6hHSB6aJWA$
-      become: true
+        dest: "/etc/sudoers.d/belhard"
+        content: |
+          vagrant ALL = NOPASSWD: ALL
+          vagrant ALL = (ALL) NOPASSWD:ALL
+      become: yes
 
-    - name: Add host SSH key
-      copy:
-        dest: "/home/belhard/.ssh/authorized_keys"
-        content:
-           ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC5ZtjzCLDUfYNvBomvsEwHjPh9qsgNhNP2m9eDrgK2omxUARhI06Y0aJr2+C9Fc5ZFEga/PESy5Sq0FrVSj2eGduKSqzDdprJsMfT0sSOGouPk1eF87xMLyeoWsOWE9bWG+9RxnTZM3F7tXw4Xt7vrvSeqIPzzmD8p7mdTVFUTSpQ4tuR+VYuaS71IfU+NwJmRPieexwZOOnP3KOJWqxp/OhGLYADpHNJVz+1wfh608mZJRk6m/f03i/It7+N7VKApfCxSDHhxmluep91WEimBK1MSbRy7tzMq0j55AqEPUdToKLFbqE893bPPr0KP/+bZfStSYFi2pBeU7Qv6qMG6w6b1madnsCotfwQQOIDskfouXUM0BxLhm+GQU5ABicJIRroJROld7OE6OMogbnEqR3UuxEq4yc0DPM3GQBRPLZ5hSylBEsa8p43V4TMw3uzuEAsW2WfDfnsFCd9h5j1nNcPT5RUMXS2swmacxghClVoZQU1oYc8eUHQYQiXO8uM= user@eduard-pc
+    - name: Add SSH keys 
+      authorized_key:
+         user: root
+         state: present
+         key: "{{ lookup('file', '/home/user/Project/Ansible/id_rsa.pub') }}"
       become: true
     
-    - name: Update APT package manager repositories cache
-      become: true
-      apt:
-        update_cache: yes
-
-    - name: Update repositories cache and install "curl" package
-      become: true
-      apt:
-        name: curl
-        update_cache: yes
-
-    - name: Update repositories cache and install "wget" package
-      become: true
-      apt:
-        name: wget
-        update_cache: yes
-   
-    - name: Update repositories cache and install "unzip" package
-      become: true
-      apt:
-        name: unzip
-        update_cache: yes
-
-    - name: Update repositories cache and install "zip" package
-      become: true
-      apt:
-        name: zip
-        update_cache: yes
-
-- name: Install WEB-server
-  hosts: web
-
-  tasks:
-
-    - name: Update APT package manager repositories cache
-      become: true
-      apt:
-        update_cache: yes
-    
-    - name: Install Java using Ansible
-      become: true
-      apt:
-        name: "{{ packages }}"
-        state: present
-      vars:
-        packages:
-           - openjdk-11-jdk
-
-- name: Install DB
-  hosts: db
-  become: true
-
-  tasks:
-
-    - name: update
-      apt: update_cache=yes
-
-    - name: Install Nginx
-      apt: name=nginx state=latest
-      notify:
-        - restart nginx
-  
-  handlers:
-    - name: restart nginx
-      service: name=nginx state=reloaded
-
-- name: Install Docker
-  hosts: all
-  become: true
-  vars_files:
-    - vars/default.yml
- 
-  tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+      become: true
 
     - name: Install required system packages
       apt: name={{ item }} state=latest update_cache=yes
-      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'wget', 'unzip', 'zip', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+      become: true
 
     - name: Add Docker GPG apt Key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
+      become: true
 
     - name: Add Docker Repository
       apt_repository:
         repo: deb https://download.docker.com/linux/ubuntu bionic stable
         state: present
+      become: true
     
     - name: Update apt and install docker-ce
       apt: update_cache=yes name=docker-ce state=latest
+      become: true
 
     - name: Install Docker Module for Python
       pip:
         name: docker
-
-    - name: Pull default Docker image
-      docker_image:
-        name: "{{ default_container_image }}"
-        source: pull
-  # Creates the number of containers defined by the variable create_containers, using values from vars file
-    - name: Create default containers
-      docker_container:
-        name: "{{ default_container_name }}{{ item }}"
-        image: "{{ default_container_image }}"
-        volumes: /home:/app
-       # command: "{{ default_container_command }}"
-        state: started
-      with_sequence: count={{ create_containers }}
+      become: true
+    
+    - name: users | adding docker users (for use without sudo)
+      user:
+        name: "{{ item }}"
+        shell: /bin/bash
+        append: yes
+        groups: docker
+      with_items: [ 'vagrant', 'belhard' ]
+      become: true
