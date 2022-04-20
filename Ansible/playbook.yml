@@ -41,7 +41,7 @@
 
     - name: Add SSH keys 
       authorized_key:
-         user: root
+         user: vagrant
          state: present
          key: "{{ lookup('file', '/home/user/Project/Ansible/id_rsa.pub') }}"
       become: true
@@ -52,7 +52,7 @@
 
     - name: Install required system packages
       apt: name={{ item }} state=latest update_cache=yes
-      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'wget', 'unzip', 'zip', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'wget', 'unzip', 'zip', 'software-properties-common', 'python3-pip', 'python-pip', 'virtualenv', 'python3-setuptools']
       become: true
 
     - name: Add Docker GPG apt Key
@@ -76,7 +76,7 @@
         name: docker
       become: true
     
-    - name: users | adding docker users (for use without sudo)
+    - name: Adding docker users
       user:
         name: "{{ item }}"
         shell: /bin/bash
@@ -84,3 +84,69 @@
         groups: docker
       with_items: [ 'vagrant', 'belhard' ]
       become: true
+    
+    - name: Install docker-compose
+      get_url: 
+        url: https://github.com/docker/compose/releases/download/v2.4.1/docker-compose-linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '+x'
+      become: true
+    
+    - name: install docker-compose using pip
+      pip:
+        name:
+          - docker
+          - docker-compose
+
+    - name: Create directory "Docker"
+      file:
+        path=/home/vagrant/site/Docker
+        state=directory
+    
+    - name: Create directory "Mariadb"
+      file:
+        path=/home/vagrant/site/Mariadb
+        state=directory
+    
+    - name: Create directory "Php"
+      file:
+        path=/home/vagrant/site/Php
+        state=directory
+  
+    - name: Create directory "Nginx"
+      file:
+        path=/home/vagrant/site/Nginx
+        state=directory
+      
+    - name: Create directory "Nginx/data"
+      file:
+        path=/home/vagrant/site/Nginx/data
+        state=directory
+    
+    - name: Create directory "Wordpress"
+      file:
+        path=/home/vagrant/site/Wordpress
+        state=directory
+    
+    - name: Send nginx.conf to Nginx
+      copy: src="~/Project/site/nginx/nginx.conf" dest="/home/vagrant/site/Nginx/nginx.conf"  
+    
+    - name: Send docker-compose file to Docker path
+      copy: src="~/Project/Docker/docker-compose.yml" dest="/home/vagrant/site/Docker/docker-compose.yml"
+      loop:
+      - docker-compose.yml
+    
+    - name: copy Docker Compose files
+      copy:
+        src: ~/Project/Docker/docker-compose.yml
+        dest: /home/vagrant/site/Docker/docker-compose.yml
+      loop:
+      - docker-compose.yml
+      
+    
+          
+    - name: Run docker-compose
+      docker_compose:
+        project_src: /home/vagrant/site/Docker
+        files:
+        - docker-compose.yml
