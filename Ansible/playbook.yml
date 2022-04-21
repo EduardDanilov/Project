@@ -98,55 +98,93 @@
           - docker
           - docker-compose
 
-    - name: Create directory "Docker"
+    - name: Create directory "site"
       file:
-        path=/home/vagrant/site/Docker
+        path=/home/vagrant/site
         state=directory
     
-    - name: Create directory "Mariadb"
+    - name: Create directory "mariadb"
       file:
-        path=/home/vagrant/site/Mariadb
+        path=/home/vagrant/site/mariadb
         state=directory
     
-    - name: Create directory "Php"
+    - name: Create directory "nginx"
       file:
-        path=/home/vagrant/site/Php
+        path=/home/vagrant/site/nginx
         state=directory
   
-    - name: Create directory "Nginx"
+    - name: Create directory "nginx/data"
       file:
-        path=/home/vagrant/site/Nginx
+        path=/home/vagrant/site/nginx/data
         state=directory
       
-    - name: Create directory "Nginx/data"
+    - name: Create directory "data"
       file:
-        path=/home/vagrant/site/Nginx/data
+        path=/home/vagrant/site/data
         state=directory
     
-    - name: Create directory "Wordpress"
+    - name: Create directory "data/html"
       file:
-        path=/home/vagrant/site/Wordpress
+        path=/home/vagrant/site/data/html
+        state=directory
+
+    - name: Create directory "data/mysql"
+      file:
+        path=/home/vagrant/site/data/mysql
+        state=directory
+    
+    - name: Create directory "logs"
+      file:
+        path=/home/vagrant/site/logs
+        state=directory
+    
+    - name: Create directory "logs/nginx"
+      file:
+        path=/home/vagrant/site/logs/nginx
+        state=directory
+    
+    - name: Create directory "wordpress"
+      file:
+        path=/home/vagrant/site/wordpress
         state=directory
     
     - name: Send nginx.conf to Nginx
-      copy: src="~/Project/site/nginx/nginx.conf" dest="/home/vagrant/site/Nginx/nginx.conf"  
+      copy: src="~/Project/site/nginx/nginx.conf" dest="/home/vagrant/site/nginx/nginx.conf"  
     
-    - name: Send docker-compose file to Docker path
-      copy: src="~/Project/Docker/docker-compose.yml" dest="/home/vagrant/site/Docker/docker-compose.yml"
-      loop:
-      - docker-compose.yml
-    
-    - name: copy Docker Compose files
+    - name: copy Docker Compose file
       copy:
         src: ~/Project/Docker/docker-compose.yml
-        dest: /home/vagrant/site/Docker/docker-compose.yml
+        dest: /home/vagrant/site/docker-compose.yml
       loop:
       - docker-compose.yml
-      
-    
-          
+           
     - name: Run docker-compose
       docker_compose:
-        project_src: /home/vagrant/site/Docker
+        project_src: /home/vagrant/site
         files:
         - docker-compose.yml
+    
+#    - name: copy backup.sh
+#      copy:
+#        src: ~/Project/site/backup.sh
+#        dest: /home/vagrant/site/mariadb/backup.sh
+#        mode: '+x'
+#        remote_src: false
+#      loop:
+#      - backup.sh
+#      become: true
+#    
+#    - name: copy copy.sh
+#      copy:
+#        src: ~/Project/site/copy.sh
+#        dest: /home/vagrant/site/mariadb/copy.sh
+#        #mode: u+rwx,g+rwx,o+rwx
+#        remote_src: true
+#      loop:
+#      - backup.sh
+#      become: true
+#    
+#    - name: Run a script using an executable in a non-system path
+#      script: /home/vagrant/site/mariadb/copy.sh
+#      args:
+#        executable: /bin/bash
