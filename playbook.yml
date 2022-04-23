@@ -43,7 +43,7 @@
       authorized_key:
          user: vagrant
          state: present
-         key: "{{ lookup('file', '/home/user/Project/Ansible/id_rsa.pub') }}"
+         key: "{{ lookup('file', './id_rsa.pub') }}"
       become: true
     
     - name: Install aptitude using apt
