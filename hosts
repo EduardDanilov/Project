@@ -1,3 +1,4 @@
 [Project]
 10.0.2.6 ansible_pass=vagrant ansible_user=vagrant 
 #ansible_host=10.0.2.6 ansible_port=22
+#
