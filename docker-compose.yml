@@ -22,7 +22,7 @@ services:
     depends_on:
       - mysql
     environment:
-      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_HOST: mysql:3306
       MYSQL_ROOT_PASSWORD: 4m3SxCpaQb*6LB#
       WORDPRESS_DB_NAME: db_wordpress
       WORDPRESS_DB_USER: user_wp
@@ -43,6 +43,7 @@ services:
       - 8080:80
     links:
       - wordpress
+    restart: always
 
   pma:
     image: phpmyadmin/phpmyadmin
