@@ -54,6 +54,9 @@ services:
       - 8081:80
     environment:
       MYSQL_ROOT_PASSWORD: 4m3SxCpaQb*6LB#
-      PMA_HOST: mysql
+      MYSQL_PASSWORD: 9UqfqeE9#hn2@t^
+      MYSQL_DATABASE: db_wordpress
+      MYSQL_USER: user_wp
+      PMA_HOST: mysql:3306
       PMA_USER: root
       PMA_PASSWORD: 4m3SxCpaQb*6LB#
