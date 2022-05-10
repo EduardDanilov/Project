@@ -151,10 +151,10 @@
     - name: Send nginx.conf to Nginx
       copy: src="./site/nginx/nginx.conf" dest="/home/vagrant/site/nginx/nginx.conf"  
     
-    - name: Send main.php to Wordpress
+    - name: Send index.php to Wordpress
       copy: 
-        src: ./site/data/html/main.php
-        dest: /home/vagrant/site/data/html/main.php
+        src: ./site/data/html/index.php
+        dest: /home/vagrant/site/data/html/index.php
       become: true
       loop:
       - index.html
