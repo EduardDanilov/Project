@@ -46,14 +46,14 @@
          key: "{{ lookup('file', './id_rsa.pub') }}"
       become: true
     
-#    - name: Install aptitude using apt
-#      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
-#      become: true
+    - name: Install aptitude using apt
+      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+      become: true
 
-#    - name: Install required system packages
-#      apt: name={{ item }} state=latest update_cache=yes
-#      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'wget', 'unzip', 'zip', 'software-properties-common', 'python3-pip', 'python-pip', 'virtualenv', 'python3-setuptools']
-#      become: true
+    - name: Install required system packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'wget', 'unzip', 'zip', 'software-properties-common', 'python3-pip', 'python-pip', 'virtualenv', 'python3-setuptools']
+      become: true
 
     - name: Add Docker GPG apt Key
       apt_key:
@@ -171,28 +171,3 @@
         project_src: /home/vagrant/site
         files:
         - docker-compose.yml
-    
-#    - name: copy backup.sh
-#      copy:
-#        src: ~/Project/site/backup.sh
-#        dest: /home/vagrant/site/mariadb/backup.sh
-#        mode: '+x'
-#        remote_src: false
-#      loop:
-#      - backup.sh
-#      become: true
-#    
-#    - name: copy copy.sh
-#      copy:
-#        src: ~/Project/site/copy.sh
-#        dest: /home/vagrant/site/mariadb/copy.sh
-#        #mode: u+rwx,g+rwx,o+rwx
-#        remote_src: true
-#      loop:
-#      - backup.sh
-#      become: true
-#    
-#    - name: Run a script using an executable in a non-system path
-#      script: /home/vagrant/site/mariadb/copy.sh
-#      args:
-#        executable: /bin/bash
