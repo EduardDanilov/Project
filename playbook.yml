@@ -67,14 +67,14 @@
         state: present
       become: true
     
-    - name: Update apt and install docker-ce
-      apt: update_cache=yes name=docker-ce state=latest
-      become: true
+#    - name: Update apt and install docker-ce
+#      apt: update_cache=yes name=docker-ce state=latest
+#      become: true
 
-    - name: Install Docker Module for Python
-      pip:
-        name: docker
-      become: true
+#    - name: Install Docker Module for Python
+#      pip:
+#        name: docker
+#      become: true
     
     - name: Adding docker users
       user:
@@ -85,18 +85,18 @@
       with_items: [ 'vagrant', 'belhard' ]
       become: true
     
-    - name: Install docker-compose
-      get_url: 
-        url: https://github.com/docker/compose/releases/download/v2.4.1/docker-compose-linux-x86_64
-        dest: /usr/local/bin/docker-compose
-        mode: '+x'
-      become: true
+#    - name: Install docker-compose
+#      get_url: 
+#        url: https://github.com/docker/compose/releases/download/v2.4.1/docker-compose-linux-x86_64
+#        dest: /usr/local/bin/docker-compose
+#        mode: '+x'
+#      become: true
     
-    - name: install docker-compose using pip
-      pip:
-        name:
-          - docker
-          - docker-compose
+#    - name: install docker-compose using pip
+#      pip:
+#        name:
+#          - docker
+#          - docker-compose
 
     - name: Create directory "site"
       file:
