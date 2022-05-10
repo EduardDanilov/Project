@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Front to the WordPress application. This file doesn't do anything, but loads
@@ -5,12 +6,13 @@
  *
  * @package WordPress
  */
-//echo "<h1>Мой сайт №2</h>";
+
 /**
  * Tells WordPress to load the WordPress theme and output it.
  *
  * @var bool
  */
+echo "<h1>my web-site 2";
 define( 'WP_USE_THEMES', true );
 
 /** Loads the WordPress Environment and Template */
