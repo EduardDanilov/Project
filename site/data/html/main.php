@@ -12,7 +12,7 @@
  *
  * @var bool
  */
-echo "<h1>my web-site 2";
+echo "<h1>my web-site 1";
 define( 'WP_USE_THEMES', true );
 
 /** Loads the WordPress Environment and Template */
