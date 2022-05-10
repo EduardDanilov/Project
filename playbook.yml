@@ -82,7 +82,7 @@
         shell: /bin/bash
         append: yes
         groups: docker
-      with_items: [ 'vagrant', 'belhard' ]
+      with_items: [ 'vagrant', 'belhard', 'jenkins' ]
       become: true
     
     - name: Install docker-compose
