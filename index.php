@@ -5,7 +5,7 @@
  *
  * @package WordPress
  */
-echo "<h1>Мой сайт №2</h>";
+echo "<h1>Мой сайт №1</h>";
 /**
  * Tells WordPress to load the WordPress theme and output it.
  *
