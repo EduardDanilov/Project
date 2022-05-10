@@ -85,14 +85,6 @@
       with_items: [ 'vagrant', 'belhard' ]
       become: true
     
-    - name: Adding docker user
-      user:
-        name: "jenkins"
-        shell: /bin/bash
-        append: yes
-        groups: docker
-      become: true
-    
     - name: Install docker-compose
       get_url: 
         url: https://github.com/docker/compose/releases/download/v2.4.1/docker-compose-linux-x86_64
